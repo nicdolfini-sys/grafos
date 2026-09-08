@@ -1,0 +1,438 @@
+/* ============================================================
+   Showcases de Grafos — BFS / DFS em jogos
+   Estetica: Lora + #ffc0fb / #ffffff + cinza grafite
+   ============================================================ */
+
+:root {
+  --pink: #ffc0fb;
+  --pink-tint: #ffe9fc;
+  --pink-faint: #fff5fd;
+  --white: #ffffff;
+  --ink: #454149;          /* cinza grafite (no lugar do preto) */
+  --ink-soft: #7b7580;
+  --line: #f2a9e9;
+  --accent: #c53fb6;       /* rosa mais forte p/ destaques e caminho */
+  --accent-deep: #a5338f;
+  --good: #4caf7d;
+  --shadow: 0 10px 30px rgba(160, 90, 150, 0.16);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 12% -5%, var(--pink-tint), transparent 60%),
+    radial-gradient(1000px 700px at 100% 0%, #ffdcfa, transparent 55%),
+    var(--white);
+  line-height: 1.6;
+}
+
+a { color: var(--accent-deep); }
+
+/* ---------- moldura de "janela" com borda ﹌ ---------- */
+
+.window {
+  background: var(--white);
+  border: 1.5px solid var(--pink);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  margin: 0 auto 2rem;
+  max-width: 1180px;
+  overflow: hidden;
+}
+
+.wave {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--pink);
+  background: var(--pink-faint);
+  height: 1.15em;
+  line-height: 1.15em;
+  letter-spacing: 1px;
+  font-size: 1rem;
+  user-select: none;
+  /* ﹌ e um caractere CJK; onde nao houver fonte, a borda tracejada abaixo
+     ja da o acabamento da "janela". */
+  font-family: "Noto Sans CJK JP", "Noto Sans CJK SC", "Noto Sans JP",
+    "Hiragino Sans", "Yu Gothic", "MS Gothic", "Lora", serif;
+}
+.wave.-bottom { border-top: 1px dashed var(--pink); }
+.wave.-top { border-bottom: 1px dashed var(--pink); }
+
+.window__body { padding: 1.6rem 1.8rem 2rem; }
+.window__title {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--ink);
+  padding: .7rem 1rem .2rem;
+}
+
+/* ---------- cabecalho de pagina ---------- */
+
+.page-head {
+  max-width: 1180px;
+  margin: 2.2rem auto 1.4rem;
+  padding: 0 1.2rem;
+  text-align: center;
+}
+.page-head h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 600;
+  margin: .2rem 0 .3rem;
+  letter-spacing: 1px;
+}
+.page-head p { margin: .2rem 0; color: var(--ink-soft); }
+
+.sparkle { color: var(--accent); letter-spacing: 2px; }
+
+.backlink {
+  display: inline-block;
+  margin: 0 auto;
+  font-size: .95rem;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--accent-deep);
+}
+.backlink:hover { color: var(--accent); }
+
+/* ---------- home ---------- */
+
+.welcome {
+  text-align: center;
+  padding: 3.4rem 1.2rem 1rem;
+}
+.welcome__mark {
+  font-size: clamp(2.6rem, 9vw, 4.6rem);
+  font-weight: 600;
+  letter-spacing: 3px;
+  margin: 0;
+  color: var(--ink);
+  text-shadow: 2px 2px 0 var(--pink);
+}
+.welcome__sub {
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-top: .4rem;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.6rem;
+  max-width: 900px;
+  margin: 2.2rem auto 1rem;
+  padding: 0 1.2rem;
+}
+.game-card {
+  display: block;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--white);
+  border: 1.5px solid var(--pink);
+  border-radius: 18px;
+  padding: 1.8rem 1.4rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.game-card:hover {
+  transform: translateY(-4px);
+  background: var(--pink-faint);
+  box-shadow: 0 16px 40px rgba(160, 90, 150, 0.24);
+}
+.game-card__name {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin: .4rem 0 .6rem;
+}
+.game-card__deco { color: var(--accent); letter-spacing: 2px; display: block; }
+.game-card__desc { color: var(--ink-soft); font-size: .96rem; margin: .6rem 0 0; }
+.game-card__algo {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: .8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .25rem .8rem;
+  background: var(--pink-faint);
+}
+
+.home-about {
+  max-width: 760px;
+  margin: 2.4rem auto 3rem;
+  padding: 1.4rem 1.6rem;
+  background: var(--pink-faint);
+  border: 1px dashed var(--pink);
+  border-radius: 16px;
+  color: var(--ink-soft);
+  font-size: .95rem;
+}
+.home-about b { color: var(--ink); }
+
+/* ---------- layout jogo + grafo lado a lado ---------- */
+
+.play-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 1.8rem;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .play-layout { grid-template-columns: 1fr; }
+}
+
+.panel-title {
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin: 0 0 .8rem;
+  font-size: 1.02rem;
+}
+.panel-title .sparkle { font-size: .9em; }
+
+/* ---------- jogo da velha ---------- */
+
+.ttt-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 1rem;
+}
+.ttt-cell {
+  border: 1.5px solid var(--pink);
+  border-radius: 14px;
+  background: var(--white);
+  font-family: "Lora", serif;
+  font-size: clamp(2rem, 9vw, 3rem);
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .12s ease, transform .12s ease;
+}
+.ttt-cell:hover:not(:disabled) { background: var(--pink-faint); }
+.ttt-cell:disabled { cursor: default; }
+.ttt-cell.-x { color: var(--accent-deep); }
+.ttt-cell.-o { color: var(--ink-soft); }
+.ttt-cell.-hint {
+  background: var(--pink-tint);
+  box-shadow: inset 0 0 0 3px var(--accent);
+  animation: pulse 1.3s ease-in-out infinite;
+}
+.ttt-cell.-win { background: #e5f6ec; box-shadow: inset 0 0 0 3px var(--good); }
+
+@keyframes pulse {
+  0%, 100% { box-shadow: inset 0 0 0 3px var(--accent); }
+  50% { box-shadow: inset 0 0 0 5px var(--pink); }
+}
+@keyframes pulse-out {
+  0%, 100% { box-shadow: 0 0 0 3px var(--accent), 0 0 12px rgba(197, 63, 182, 0.45); }
+  50% { box-shadow: 0 0 0 5px var(--pink), 0 0 18px rgba(197, 63, 182, 0.6); }
+}
+
+/* ---------- eight puzzle ---------- */
+
+.char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.char-card {
+  border: 1.5px solid var(--pink);
+  border-radius: 16px;
+  padding: .7rem .5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  background: var(--white);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.char-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.char-card.-active { box-shadow: 0 0 0 3px var(--accent), var(--shadow); }
+.char-card img {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+  margin-bottom: .5rem;
+}
+.char-card__name {
+  font-size: .92rem;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+.char-card__deco { display: block; color: var(--accent); font-size: .85rem; }
+
+.puzzle-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 1rem;
+  background: var(--pink);
+  padding: 6px;
+  border-radius: 16px;
+}
+.puzzle-tile {
+  border-radius: 10px;
+  background-size: 300% 300%;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: filter .12s ease;
+}
+.puzzle-tile:hover { filter: brightness(1.04) saturate(1.05); }
+.puzzle-tile.-blank {
+  background: var(--pink-faint) !important;
+  cursor: default;
+}
+.puzzle-tile.-hint {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 14px rgba(197, 63, 182, 0.5);
+  animation: pulse-out 1.3s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- controles ---------- */
+
+.controls { display: flex; flex-wrap: wrap; gap: .6rem; margin: .4rem 0 1rem; }
+button.btn {
+  font-family: "Lora", serif;
+  font-size: .92rem;
+  color: var(--ink);
+  background: var(--white);
+  border: 1.5px solid var(--pink);
+  border-radius: 999px;
+  padding: .45rem 1.1rem;
+  cursor: pointer;
+  transition: background .12s ease, transform .12s ease;
+}
+button.btn:hover { background: var(--pink-faint); }
+button.btn:active { transform: scale(.97); }
+button.btn.-primary { background: var(--accent); color: var(--white); border-color: var(--accent); }
+button.btn.-primary:hover { background: var(--accent-deep); }
+button.btn:disabled { opacity: .45; cursor: default; }
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  font-size: .9rem;
+  color: var(--ink-soft);
+  margin: .2rem 0 1rem;
+}
+.slider-row input[type="range"] { accent-color: var(--accent); flex: 1; }
+
+/* ---------- status / mensagens ---------- */
+
+.status {
+  min-height: 3.2em;
+  background: var(--pink-faint);
+  border: 1px dashed var(--pink);
+  border-radius: 12px;
+  padding: .6rem .9rem;
+  font-size: .95rem;
+  margin-bottom: 1rem;
+}
+.status b { color: var(--accent-deep); }
+.status .tag {
+  display: inline-block;
+  font-size: .78rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--pink);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: .1rem .6rem;
+  margin-right: .4rem;
+}
+
+.note {
+  font-size: .86rem;
+  color: var(--ink-soft);
+  background: var(--pink-faint);
+  border-left: 3px solid var(--pink);
+  padding: .7rem .9rem;
+  border-radius: 0 10px 10px 0;
+  margin-top: 1rem;
+}
+.note code {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 0 .3rem;
+  font-size: .92em;
+}
+
+/* ---------- grafo ---------- */
+
+.graph-wrap {
+  border: 1.5px solid var(--pink);
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--pink-faint), var(--white));
+}
+.graph-canvas {
+  display: block;
+  width: 100%;
+  height: 520px;
+  cursor: grab;
+}
+.graph-canvas:active { cursor: grabbing; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: .84rem;
+  color: var(--ink-soft);
+  margin-top: .7rem;
+}
+.legend span { display: inline-flex; align-items: center; gap: .35rem; }
+.legend i {
+  width: 12px; height: 12px; border-radius: 3px; display: inline-block;
+}
+.legend .-start { background: #7a6f80; }
+.legend .-goal { background: var(--good); }
+.legend .-seen { background: #f2b8ea; }
+.legend .-path { background: var(--accent); }
+
+.graph-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .6rem;
+  font-size: .82rem;
+  color: var(--ink-soft);
+  margin-top: .5rem;
+}
+
+/* ---------- rodape ---------- */
+
+.foot {
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: .85rem;
+  padding: 2rem 1rem 3rem;
+}
+.foot .wave-inline { color: var(--pink); letter-spacing: 1px; }
+
+.hidden { display: none !important; }

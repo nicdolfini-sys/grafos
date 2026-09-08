@@ -3,80 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trabalho 1 — Jogo de Grafos</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #0f172a;
-      --card: #1e293b;
-      --accent: #38bdf8;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at 30% 20%, #1e293b, var(--bg));
-      color: var(--text);
-      padding: 2rem;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid #334155;
-      border-radius: 16px;
-      padding: 2.5rem 3rem;
-      max-width: 540px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-      text-align: center;
-    }
-    h1 { margin: 0 0 .5rem; font-size: 1.6rem; }
-    p { color: var(--muted); line-height: 1.6; }
-    .badge {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: .4rem .9rem;
-      border-radius: 999px;
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--accent);
-      font-size: .85rem;
-      font-weight: 600;
-    }
-    svg { margin: 1.5rem auto 0; display: block; }
-    .node { fill: var(--accent); }
-    .edge { stroke: #475569; stroke-width: 2; }
-    .stamp { margin-top: 1.5rem; font-size: .8rem; color: #64748b; }
-    code { background: #0f172a; padding: .15rem .4rem; border-radius: 6px; }
-  </style>
+  <title>owelcome ✦ Showcases de Grafos</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="card">
-    <h1>🎲 Jogo de Grafos</h1>
-    <p>
-      Página de teste publicada automaticamente no <strong>GitHub Pages</strong>
-      via <strong>GitHub Actions</strong>. Se você está vendo isto, o pipeline de
-      deploy está funcionando.
+  <div class="welcome">
+    <p class="sparkle">⋆ ˚ ✦ ⋆ ˚ ✧ ⋆ ✩ ⋆ ✧ ˚ ⋆ ✦ ˚ ⋆</p>
+    <h1 class="welcome__mark">owelcome</h1>
+    <p class="welcome__sub">˚ · ✧ · ˚ &nbsp; showcases de BFS &amp; DFS aplicados a jogos &nbsp; ˚ · ✧ · ˚</p>
+  </div>
+
+  <div class="window" style="max-width: 940px;">
+    <span class="wave -top" data-wave></span>
+    <div class="window__title">✿ · ✧ · escolha um jogo · ✧ · ✿</div>
+    <div class="window__body">
+      <div class="game-grid" style="margin-top:.4rem;">
+
+        <a class="game-card" href="tictactoe.html">
+          <span class="game-card__deco">⋆ ˚ ✧ ˚ ⋆</span>
+          <div class="game-card__name">Jogo da Velha</div>
+          <span class="game-card__deco">✦ · ♡ · ✦</span>
+          <p class="game-card__desc">
+            Tabuleiro 3×3 com o grafo da árvore de jogadas ao lado. A cada
+            vez, o programa percorre a árvore (DFS) e sugere a melhor jogada
+            para você; o computador responde com uma regra simples de
+            segurança.
+          </p>
+          <span class="game-card__algo">busca em profundidade · dfs</span>
+        </a>
+
+        <a class="game-card" href="eightpuzzle.html">
+          <span class="game-card__deco">⋆ ˚ ✧ ˚ ⋆</span>
+          <div class="game-card__name">Eight Puzzle</div>
+          <span class="game-card__deco">✦ · ♡ · ✦</span>
+          <p class="game-card__desc">
+            Quebra-cabeça 3×3 montado com as personagens Sanrio. Escolha uma
+            imagem e veja, em tempo real, o grafo de estados sendo expandido
+            pela busca em largura (BFS) até achar o caminho ótimo — com a
+            próxima peça sugerida em destaque.
+          </p>
+          <span class="game-card__algo">busca em largura · bfs</span>
+        </a>
+
+      </div>
+    </div>
+    <span class="wave -bottom" data-wave></span>
+  </div>
+
+  <div class="home-about">
+    <p><b>Sobre.</b> Cada jogo é modelado como um <b>grafo de estados</b>: um nó
+    é uma configuração do tabuleiro e uma aresta é uma jogada válida.</p>
+    <p style="margin-bottom:0;">
+      O <b>Eight Puzzle</b> usa <b>BFS</b> (fila) para encontrar a sequência
+      mínima de movimentos até o objetivo. O <b>Jogo da Velha</b> usa
+      <b>DFS</b> (recursão) sobre a árvore de jogadas para avaliar cada
+      posição e apontar a melhor continuação. Os grafos são desenhados de
+      forma grosseira — podem ficar grandes, e tudo bem.
     </p>
-    <svg width="240" height="140" viewBox="0 0 240 140" role="img" aria-label="Grafo de exemplo">
-      <line class="edge" x1="40" y1="40" x2="120" y2="20" />
-      <line class="edge" x1="40" y1="40" x2="60" y2="110" />
-      <line class="edge" x1="120" y1="20" x2="200" y2="60" />
-      <line class="edge" x1="120" y1="20" x2="60" y2="110" />
-      <line class="edge" x1="200" y1="60" x2="160" y2="120" />
-      <line class="edge" x1="60" y1="110" x2="160" y2="120" />
-      <circle class="node" cx="40" cy="40" r="10" />
-      <circle class="node" cx="120" cy="20" r="10" />
-      <circle class="node" cx="200" cy="60" r="10" />
-      <circle class="node" cx="60" cy="110" r="10" />
-      <circle class="node" cx="160" cy="120" r="10" />
-    </svg>
-    <div class="badge">deploy: github-actions ✔</div>
-    <p class="stamp">
-      Publicado a partir de <code>site/</code> na branch <code>main</code>.
-    </p>
-  </main>
+  </div>
+
+  <div class="foot">
+    <span data-wave-inline="24"></span><br />
+    Trabalho 1 · Teoria dos Grafos · showcase de BFS/DFS
+  </div>
+
+  <script src="js/ui.js"></script>
 </body>
 </html>

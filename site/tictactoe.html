@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogo da Velha ✦ DFS</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-head">
+    <a class="backlink" href="index.html">⟵ voltar para owelcome</a>
+    <h1><span class="sparkle">⋆ ˚ ✦</span> Jogo da Velha <span class="sparkle">✦ ˚ ⋆</span></h1>
+    <p>Você é o <b>X</b> e começa. O grafo ao lado é a árvore de jogadas
+      percorrida por <b>DFS</b>.</p>
+  </div>
+
+  <div class="window">
+    <span class="wave -top" data-wave></span>
+    <div class="window__body">
+      <div class="play-layout">
+
+        <!-- coluna do jogo -->
+        <div>
+          <p class="panel-title"><span class="sparkle">♡</span> tabuleiro</p>
+          <div class="ttt-board" id="board"></div>
+
+          <div class="status" id="status"></div>
+
+          <div class="controls">
+            <button class="btn -primary" id="btn-new">✿ nova partida</button>
+            <button class="btn" id="btn-hint">mostrar sugestão</button>
+          </div>
+
+          <div class="note">
+            <b>Como o computador (O) joga.</b> Ele escolhe qualquer casa livre
+            desde que a sua jogada seguinte não resulte em vitória; só abre mão
+            disso quando <i>toda</i> casa te daria a vitória (inevitável). Se ele
+            puder vencer na hora, vence. Bloquear surge sozinho dessa regra.
+          </div>
+          <div class="note">
+            <b>Sugestão para você (X).</b> <code>minimax</code> por DFS:
+            <code>valor = +1</code> se X vence, <code>-1</code> se O vence,
+            <code>0</code> empate; X maximiza, O minimiza. A casa destacada é a
+            de maior valor.
+          </div>
+        </div>
+
+        <!-- coluna do grafo -->
+        <div>
+          <p class="panel-title"><span class="sparkle">✦</span> grafo da árvore de jogadas (DFS)</p>
+          <div class="graph-wrap">
+            <canvas class="graph-canvas" id="graph"></canvas>
+          </div>
+          <div class="legend">
+            <span><i class="-start"></i> posição atual</span>
+            <span><i class="-seen"></i> estado explorado</span>
+            <span><i class="-goal"></i> fim de jogo</span>
+            <span><i class="-path"></i> linha principal (sugestão)</span>
+          </div>
+          <div class="graph-meta">
+            <span id="graph-count">—</span>
+            <span>arraste para mover · roda do mouse para zoom ·
+              <a href="#" id="btn-fit">ajustar</a></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <span class="wave -bottom" data-wave></span>
+  </div>
+
+  <div class="foot"><span data-wave-inline="24"></span></div>
+
+  <script src="js/graphview.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/tictactoe.js"></script>
+</body>
+</html>

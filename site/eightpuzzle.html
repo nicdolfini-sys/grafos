@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eight Puzzle ✦ BFS</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-head">
+    <a class="backlink" href="index.html">⟵ voltar para owelcome</a>
+    <h1><span class="sparkle">⋆ ˚ ✦</span> Eight Puzzle <span class="sparkle">✦ ˚ ⋆</span></h1>
+    <p>Escolha uma personagem. A <b>BFS</b> expande o grafo de estados até o
+      objetivo e sugere a próxima peça.</p>
+  </div>
+
+  <!-- seletor de imagem -->
+  <div class="window" id="picker">
+    <span class="wave -top" data-wave></span>
+    <div class="window__title">✿ · ✧ · escolha a imagem do quebra-cabeça · ✧ · ✿</div>
+    <div class="window__body">
+      <div class="char-grid" id="char-grid"></div>
+    </div>
+    <span class="wave -bottom" data-wave></span>
+  </div>
+
+  <!-- area de jogo -->
+  <div class="window hidden" id="game">
+    <span class="wave -top" data-wave></span>
+    <div class="window__body">
+      <div class="play-layout">
+
+        <div>
+          <p class="panel-title"><span class="sparkle">♡</span> <span id="game-name">—</span></p>
+          <div class="puzzle-board" id="board"></div>
+
+          <div class="status" id="status"></div>
+
+          <div class="slider-row">
+            <label for="depth">embaralhar:</label>
+            <input type="range" id="depth" min="4" max="16" value="11" step="1" />
+            <span id="depth-val">11</span>
+          </div>
+
+          <div class="controls">
+            <button class="btn -primary" id="btn-shuffle">✿ embaralhar</button>
+            <button class="btn" id="btn-hint">aplicar sugestão</button>
+            <button class="btn" id="btn-solve">resolver</button>
+            <button class="btn" id="btn-change">trocar imagem</button>
+          </div>
+
+          <div class="note">
+            <b>Lógica (BFS — igual ao pseudocódigo).</b>
+            <code>fila = deque([inicio])</code>,
+            <code>pai = {inicio: None}</code>; enquanto a fila não esvazia,
+            tira da frente, testa se é o objetivo, senão enfileira cada vizinho
+            ainda não visto guardando <code>pai[viz] = estado</code>. No fim,
+            <code>reconstruct(pai, objetivo)</code> devolve o caminho mínimo.
+            Vizinho = deslizar uma peça para o espaço vazio.
+          </div>
+        </div>
+
+        <div>
+          <p class="panel-title"><span class="sparkle">✦</span> grafo de estados (BFS, em tempo real)</p>
+          <div class="graph-wrap">
+            <canvas class="graph-canvas" id="graph"></canvas>
+          </div>
+          <div class="legend">
+            <span><i class="-start"></i> estado inicial</span>
+            <span><i class="-seen"></i> estado visitado</span>
+            <span><i class="-goal"></i> objetivo</span>
+            <span><i class="-path"></i> caminho mínimo</span>
+          </div>
+          <div class="graph-meta">
+            <span id="graph-count">—</span>
+            <span>arraste · roda para zoom ·
+              <a href="#" id="btn-fit">ajustar</a></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <span class="wave -bottom" data-wave></span>
+  </div>
+
+  <div class="foot"><span data-wave-inline="24"></span></div>
+
+  <script src="js/graphview.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/eightpuzzle.js"></script>
+</body>
+</html>
