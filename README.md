@@ -30,28 +30,30 @@ Ambos partem de um nó, marcam quem já foi visitado (para não repetir) e vão
 alcançando vizinhos. A única diferença é **em que ordem** os nós pendentes são
 processados:
 
-```
-BFS(inicio):
+```python
+from collections import deque
+
+def bfs(inicio):
     visitados = {inicio}
-    fila = [inicio]                     # FILA: primeiro a entrar, primeiro a sair
-    enquanto fila não vazia:
-        u = fila.remove_do_início()
-        para cada vizinho v de u:
-            se v não está em visitados:
+    fila = deque([inicio])          # FIFO: primeiro a entrar, primeiro a sair
+    while fila:
+        u = fila.popleft()          # remove do início
+        for v in vizinhos(u):
+            if v not in visitados:
                 visitados.add(v)
-                fila.adiciona_no_fim(v)
+                fila.append(v)      # adiciona no fim
 ```
 
-```
-DFS(inicio):
+```python
+def dfs(inicio):
     visitados = {inicio}
-    pilha = [inicio]                    # PILHA: último a entrar, primeiro a sair
-    enquanto pilha não vazia:
-        u = pilha.remove_do_topo()
-        para cada vizinho v de u:
-            se v não está em visitados:
+    pilha = [inicio]                # LIFO: último a entrar, primeiro a sair
+    while pilha:
+        u = pilha.pop()            # remove do topo
+        for v in vizinhos(u):
+            if v not in visitados:
                 visitados.add(v)
-                pilha.adiciona_no_topo(v)
+                pilha.append(v)    # adiciona no topo
 ```
 
 Troque a **fila** por uma **pilha** e o comportamento muda por completo:
@@ -78,25 +80,28 @@ número de jogadas até ele — ou seja, o caminho mais curto. Como a BFS alcan�
 cada nó pela primeira vez já pelo caminho mínimo, a primeira vez que o objetivo
 sai da fila, temos a resposta ótima.
 
-```
-BFS_menor_caminho(inicio, objetivo):
-    fila = [inicio]
-    veio_de = {inicio: nenhum}              # de onde cheguei a cada nó
-    enquanto fila não vazia:
-        estado = fila.remove_do_início()
-        se estado == objetivo:
-            retorna reconstruir(veio_de, objetivo)
-        para cada vizinho v de estado:
-            se v não está em veio_de:
-                veio_de[v] = estado
-                fila.adiciona_no_fim(v)
+```python
+from collections import deque
 
-reconstruir(veio_de, no):                   # sobe do objetivo até o início
+def bfs_menor_caminho(inicio, objetivo):
+    fila = deque([inicio])
+    veio_de = {inicio: None}                 # de onde cheguei a cada nó
+    while fila:
+        estado = fila.popleft()
+        if estado == objetivo:
+            return reconstruir(veio_de, objetivo)
+        for v in vizinhos(estado):
+            if v not in veio_de:
+                veio_de[v] = estado
+                fila.append(v)
+
+def reconstruir(veio_de, no):                # sobe do objetivo até o início
     caminho = []
-    enquanto no != nenhum:
-        caminho.insere_no_começo(no)
+    while no is not None:
+        caminho.append(no)
         no = veio_de[no]
-    retorna caminho
+    caminho.reverse()
+    return caminho
 ```
 
 O dicionário `veio_de` acumula duas funções: serve de conjunto de visitados
@@ -121,13 +126,12 @@ conhece **chegando aos finais** que ela permite. DFS é a forma natural de fazer
 isso: desce por um ramo até um fim de jogo, anota o resultado, volta e tenta o
 próximo. A recursão é a própria pilha do DFS.
 
-```
-DFS_avalia(no):                            # nota da posição, com jogo perfeito
-    se no é fim de jogo:
-        retorna +1 se X venceu, -1 se O venceu, 0 se velha
-    notas = [DFS_avalia(filho) para cada filho de no]
-    se é a vez de X:  retorna max(notas)   # X quer a maior nota
-    senão:            retorna min(notas)   # O quer a menor
+```python
+def dfs_avalia(no):                          # nota da posição, com jogo perfeito
+    if fim_de_jogo(no):
+        return resultado(no)                 # +1 X venceu, -1 O venceu, 0 velha
+    notas = [dfs_avalia(f) for f in filhos(no)]
+    return max(notas) if vez_de_x(no) else min(notas)
 ```
 
 Isso é a busca em profundidade carregando um valor na volta: cada nó recebe a
