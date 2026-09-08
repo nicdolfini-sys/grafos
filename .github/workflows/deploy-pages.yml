@@ -1,0 +1,49 @@
+name: Deploy static site to GitHub Pages
+
+on:
+  # Publica a cada push na branch principal
+  push:
+    branches: [main]
+  # Permite disparar manualmente pela aba Actions
+  workflow_dispatch:
+
+# Permissões necessárias para o deploy via GitHub Actions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Garante um deploy por vez, sem cancelar execuções em andamento
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          # Cria/ativa o GitHub Pages automaticamente se ainda não estiver ativo
+          enablement: true
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Diretório com os arquivos estáticos do site
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
